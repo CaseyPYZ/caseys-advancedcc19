@@ -2,7 +2,7 @@
 
 # speed up
 
-ffmpeg -i input.mkv -filter_complex "[0:v]setpts=0.8*PTS[v];[0:a]atempo=1.25[a]” -map "[v]" -map "[a]" output.mkv
+ffmpeg -i output_5.mp4 -filter_complex "[0:v]setpts=0.8*PTS[v];[0:a]atempo=1.25[a]” -map "[v]" -map "[a]" output_5s.mp4
 
 
 # reverse
@@ -24,6 +24,7 @@ ffmpeg -i s_e2.mp4 -i output_6.mp4 -filter_complex "[0:v]setpts=PTS-STARTPTS[v0]
 #audio from source video
 
 ffmpeg -i s_e3.mp4 -i output_75new.mp4 -c copy -map 0:0 -map 1:1 -shortest s_f2.mp4
+
 
 
 # rescale video size
