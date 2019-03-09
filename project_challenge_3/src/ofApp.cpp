@@ -76,19 +76,17 @@ void ofApp::checkPiece(ofVec2f cursor){
     for(auto &p : testCollage.pieces){
         
         if( cursor.x > p.pos.x && cursor.x < p.pos.x+p.size.x && cursor.y > p.pos.y && cursor.y < p.pos.y+p.size.y){
-            
+            // cursor is winthin the range of this piece
             touching = true;
             
-            ofLog() << p.FILE_PATH << endl;
             if ( !holding ){
-                //cursor is winthin the range of this piece
+                // if we're not currently holding a piece
                 p.isTouched = true;
                
-                holding = true;
             }
         } else {
             p.isTouched = false;
-            touching = false;
+            //touching = false;
         }
         
     }
@@ -100,12 +98,14 @@ void ofApp::checkPiece(ofVec2f cursor){
 void ofApp::keyPressed(int key){
     // isSelected
     if(key == ' ' && touching){
+        // if spacebar is down & we're currently touching a piece
         for(auto &p : testCollage.pieces){
-        
+            // set this piece's isSelected value to its isTouched value
             p.isSelected = p.isTouched;
             
         }
-        //ofLogNotice() << "space bar is down" << endl;
+        holding = true;
+        
     }
 }
 
@@ -117,6 +117,7 @@ void ofApp::keyReleased(int key){
         ofLog() << p.isSelected;
         
     }
+    
     if(key == ' '){
         for(auto &p : testCollage.pieces){
           
@@ -125,7 +126,7 @@ void ofApp::keyReleased(int key){
         }
     }
     
-    holding=false;
+    holding = false;
 }
 
 //--------------------------------------------------------------

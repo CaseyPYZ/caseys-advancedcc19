@@ -39,11 +39,11 @@ class ofApp : public ofBaseApp{
         string bgPath = "bg.jpg";
         vector<string> pathes{"red.jpg","blue.jpg","black.jpg","yellow.jpg"};
         vector<ofVec2f> posVec{
-            ofVec2f(85,86),ofVec2f(400,477),
-            ofVec2f(88,398),ofVec2f(400,85) };
+            ofVec2f(412,137),ofVec2f(721,518),
+            ofVec2f(415,441),ofVec2f(718,137) };
         vector<ofVec2f> sizeVec{
-            ofVec2f(307,302),ofVec2f(189,112),
-            ofVec2f(150,150),ofVec2f(189,146) };
+            ofVec2f(296,295),ofVec2f(181,107),
+            ofVec2f(146,143),ofVec2f(182,142) };
     
         Collage testCollage;
         Piece* touchedPiece;
