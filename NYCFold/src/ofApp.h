@@ -28,16 +28,10 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
-        bool comparIncdt(Incident& lhs, Incident& rhs);
+        bool comparIncdt(shared_ptr<Incident> lhs, shared_ptr<Incident> rhs);
     
         ofxJSONElement json;
         string del = ":";
-    
-//        map borders; l = 169000
-//        int NORTH = 283000;
-//        int SOUTH = 114000;
-//        int EAST = 1078000;
-//        int WEST = 909000;
     
         string url = "https://data.cityofnewyork.us/resource/833y-fsy8.json?$limit=20000&$$app_token=gkNekzywG9Gf1HHElNzW9qaxc";
     

@@ -33,22 +33,22 @@ public:
     Incident(string time_s, string x, string y);
     Incident(string time_s, string timevals, int xp, int yp);
     
-    inline bool operator < (const Incident& _incdt) const{
+    inline bool operator < (const Incident& _incdt){
         return this->timeval < _incdt.timeval;
     };
     
-    inline bool operator > (const Incident& _incdt) const{
+    inline bool operator > (const Incident& _incdt){
         return this->timeval > _incdt.timeval;
     };
     
-    inline bool operator == (const Incident& _incdt) const{
+    inline bool operator == (const Incident& _incdt){
         return this->timeval == _incdt.timeval;
     };
     
     
     void display();
     
-} myObject;
+} incdtObject;
 
 
 #endif /* Incident_hpp */

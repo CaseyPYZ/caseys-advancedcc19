@@ -110,9 +110,15 @@ void ofApp::setup(){
             
         }
         
-        sort(incidents.begin(), incidents.end());
-        //sort(incidents.begin(), incidents.end(), myObject);
-        //sort(incidents.begin(), incidents.end(), &ofApp::comparIncdt);
+        
+        /*
+         Sort incidents vector in chronological order
+         according to the Incidents' "timeval" property (unsigned int)
+         */
+        
+        //std::sort(incidents.begin(), incidents.end()); - use overloaded operator< ?
+        //sort(incidents.begin(), incidents.end(), incdtObject);
+        //std::sort(incidents.begin(), incidents.end(), &ofApp::comparIncdt);
         
     }
     
@@ -133,13 +139,13 @@ void ofApp::draw(){
     ofBackground(0);
     ofSetColor(160);
     
-    //ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
+    ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
     
     for(int i=0; i<30; i++){
         auto incd = incidents[i];
-        ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+40);
+        //ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+60);
         
-        //ofDrawCircle(incd->x_pos, incd->y_pos, 0.5);
+        incd->display();
         //ofLog() << i << endl;
     }
     
@@ -184,8 +190,8 @@ void ofApp::exit(){
 }
 
 //--------------------------------------------------------------
-bool ofApp::comparIncdt(Incident& lhs, Incident& rhs){
-    return (lhs.timeval < rhs.timeval);
+bool ofApp::comparIncdt(shared_ptr<Incident> lhs, shared_ptr<Incident> rhs){
+    return (lhs->timeval < rhs->timeval);
 }
 
 //--------------------------------------------------------------
