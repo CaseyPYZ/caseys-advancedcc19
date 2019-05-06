@@ -17,10 +17,28 @@ Incident::Incident(){
 //--------------------------------------------------------------
 Incident::Incident(string time_s, string x, string y){
     
-    timestr = time_s;
-    timestamp = std::stoll(time_s);
+    timestamp = time_s;
     x_coord = std::stoi(x);
     y_coord = std::stoi(y);
+    
+    if( stoi(time_s.substr(2,1))==0 ){
+        timeval = stoi(time_s.substr(3,9));
+    } else if( stoi(time_s.substr(2,1))==1 ){
+        timeval = stoi(time_s.substr(2,10));
+    }
+    
+    x_pos = ofMap(x_coord, WEST, EAST, 0, ofGetWidth());
+    y_pos = ofGetHeight()-ofMap(y_coord, SOUTH, NORTH, 0, ofGetHeight());
+    
+}
+
+//--------------------------------------------------------------
+Incident::Incident(string time_s, string timevals, int xp, int yp){
+    
+    timestamp = time_s;
+    timeval = stoi(timevals);
+    x_pos = xp;
+    y_pos = yp;
     
 }
 

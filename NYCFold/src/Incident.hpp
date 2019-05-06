@@ -16,33 +16,39 @@
 class Incident{
     
 public:
-    string timestr;
-    long long int timestamp;
+    string timestamp;
+    unsigned int timeval;
     int x_coord;
     int y_coord;
     
     int x_pos;
     int y_pos;
     
+    int NORTH = 283000;
+    int SOUTH = 114000;
+    int EAST = 1078000;
+    int WEST = 909000;
+    
     Incident();
     Incident(string time_s, string x, string y);
+    Incident(string time_s, string timevals, int xp, int yp);
     
-    inline bool operator < (const Incident& _incdt){
-        return this->timestamp < _incdt.timestamp;
+    inline bool operator < (const Incident& _incdt) const{
+        return this->timeval < _incdt.timeval;
     };
     
-    inline bool operator > (const Incident& _incdt){
-        return this->timestamp > _incdt.timestamp;
+    inline bool operator > (const Incident& _incdt) const{
+        return this->timeval > _incdt.timeval;
     };
     
-    inline bool operator == (const Incident& _incdt){
-        return this->timestamp == _incdt.timestamp;
+    inline bool operator == (const Incident& _incdt) const{
+        return this->timeval == _incdt.timeval;
     };
     
     
     void display();
     
-};
+} myObject;
 
 
 #endif /* Incident_hpp */

@@ -14,6 +14,7 @@ class ofApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
+        void exit();
 
 		void keyPressed(int key);
 		void keyReleased(int key);
@@ -27,28 +28,28 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+        bool comparIncdt(Incident& lhs, Incident& rhs);
+    
         ofxJSONElement json;
         string del = ":";
     
-        int xmin = 1000000;
-        int xmax = 1000000;
-        int ymin = 200000;
-        int ymax = 200000;
-    
-        // map borders
-        int NORTH = 0;
-        int SOUTH = 0;
-        int EAST = 0;
-        int WEST = 0;
+//        map borders; l = 169000
+//        int NORTH = 283000;
+//        int SOUTH = 114000;
+//        int EAST = 1078000;
+//        int WEST = 909000;
     
         string url = "https://data.cityofnewyork.us/resource/833y-fsy8.json?$limit=20000&$$app_token=gkNekzywG9Gf1HHElNzW9qaxc";
     
         vector<shared_ptr<Incident>> incidents;
     
         ofxXmlSettings xml;
-        string file_path = "shooting_data.xml";
+        string FILE_PATH = "shooting_data.xml";
         bool data_ready =  false;
+        bool data_saved = false;
         fstream fin;
         int fsize;
+    
+        ofImage ss;
         
 };

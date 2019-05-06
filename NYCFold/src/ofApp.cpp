@@ -4,20 +4,26 @@
 void ofApp::setup(){
     
     // check if data file already exists
-    string fileName = ofToDataPath(file_path);
+    string fileName = ofToDataPath(FILE_PATH);
     fin.open(fileName.c_str(), ios::in);
     if(fin.is_open()){
         data_ready = true;
+        data_saved = true;
     }
     fin.close();
 
     
     // read data
+    
     if(data_ready){
+        
+        /*
+         Read data from local XML file
+         */
         
         ofLogNotice("data_src") << "Data read from XML file." << endl;
         
-        if ( xml.loadFile(file_path) ){
+        if ( xml.loadFile(FILE_PATH) ){
             xml.pushTag("incidts");
             fsize = xml.getNumTags("incidt");
             
@@ -25,9 +31,10 @@ void ofApp::setup(){
                 xml.pushTag("incidt", k);
                 
                 string tstamp = xml.getValue("timestamp", "0");
-                string xs = xml.getValue("x_str", "0");
-                string ys = xml.getValue("y_str", "0");
-                auto incdt = make_shared<Incident>(tstamp, xs, ys);
+                string tvals = xml.getValue("timeval", "0");
+                int xp = xml.getValue("x_pos",0);
+                int yp = xml.getValue("y_pos",0);
+                auto incdt = make_shared<Incident>(tstamp, tvals, xp, yp);
                 
                 incidents.push_back(incdt);
                 xml.popTag();
@@ -40,7 +47,10 @@ void ofApp::setup(){
         
         
     } else {
-        // read data from NYC Open Data json api
+        /*
+         Read raw data from NYC Open Data json api
+         */
+        
         ofLogNotice("data_src") << "Data read from URL." << endl;
         
         //std::string url = "https://data.cityofnewyork.us/resource/833y-fsy8.json?$limit=20000&$$app_token=gkNekzywG9Gf1HHElNzW9qaxc";
@@ -60,16 +70,11 @@ void ofApp::setup(){
         /*
          Process json data
          Instantiate a Incident object off of each data unit
-         Save data to xml
          */
-        
-        xml.addTag("incidts");
-        xml.pushTag("incidts");
-        
         for (Json::ArrayIndex i = 0; i < json.size(); ++i)
         {
             string date  = json[i]["occur_date"].asString();
-            string time = json[i]["occur_time"].asString();
+            string time = json[i]["occur_time"].asString();;
             string x_str = json[i]["x_coord_cd"].asString();
             string y_str = json[i]["y_coord_cd"].asString();
             
@@ -89,13 +94,13 @@ void ofApp::setup(){
             
             string h = time.substr(0,p1);
             string m = time.substr(p1+1,p2);
-            string s = time.substr(p1+p2+2,2);
+            //string s = time.substr(p1+p2+2,2);
             
             if(h.size()==1){
                 h = "0" + h;
             }
             
-            string timetxt = h + m + s;
+            string timetxt = h + m;
             
             string ftxt = datetxt + timetxt;
             
@@ -103,17 +108,11 @@ void ofApp::setup(){
             auto incdt = make_shared<Incident>(ftxt, x_str, y_str);
             incidents.push_back(incdt);
             
-            xml.addTag("incidt");
-            xml.pushTag("incidt", i);
-            xml.addValue("timestamp", ftxt);
-            xml.addValue("x_str", x_str);
-            xml.addValue("y_str", y_str);
-            xml.popTag();
-            
         }
         
-        xml.popTag();
-        xml.saveFile(file_path);
+        sort(incidents.begin(), incidents.end());
+        //sort(incidents.begin(), incidents.end(), myObject);
+        //sort(incidents.begin(), incidents.end(), &ofApp::comparIncdt);
         
     }
     
@@ -127,24 +126,75 @@ void ofApp::update(){
 
 }
 
+
 //--------------------------------------------------------------
 void ofApp::draw(){
     
     ofBackground(0);
-    ofSetColor(255);
+    ofSetColor(160);
     
-    ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
+    //ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
     
-    for(int i=0; i<20; i++){
+    for(int i=0; i<30; i++){
         auto incd = incidents[i];
-        ofDrawBitmapString(incd->timestr, 20, i*20+40);
+        ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+40);
+        
+        //ofDrawCircle(incd->x_pos, incd->y_pos, 0.5);
+        //ofLog() << i << endl;
     }
     
 
 }
 
 //--------------------------------------------------------------
+void ofApp::exit(){
+    
+    ofLogNotice("data_saved") << data_saved << endl;
+    
+    /*
+     If "shooting_data.xml" doesn't exist yet
+     Save Incidents vector data to local XML file
+    */
+    
+    if(!data_saved){
+        
+        xml.addTag("incidts");
+        xml.pushTag("incidts");
+        
+        for(int i=0; i<incidents.size(); i++){
+            
+            xml.addTag("incidt");
+            xml.pushTag("incidt", i);
+            xml.addValue("timestamp", incidents[i]->timestamp);
+            xml.addValue("timeval", to_string(incidents[i]->timeval));
+            xml.addValue("x_pos", incidents[i]->x_pos);
+            xml.addValue("y_pos", incidents[i]->y_pos);
+            
+            xml.popTag();
+        }
+        
+        xml.popTag();
+        xml.saveFile(FILE_PATH);
+        
+        data_saved = true;
+        
+        ofLogNotice("on exit") << "Data saved" << endl;
+    }
+    
+}
+
+//--------------------------------------------------------------
+bool ofApp::comparIncdt(Incident& lhs, Incident& rhs){
+    return (lhs.timeval < rhs.timeval);
+}
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    
+    if( key=='s' ){
+        ss.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
+        ss.save("screenshot.png");
+    }
 
 }
 
