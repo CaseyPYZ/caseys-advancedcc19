@@ -45,5 +45,7 @@ class ofApp : public ofBaseApp{
         int fsize;
     
         ofImage ss;
+    
+    
         
 };

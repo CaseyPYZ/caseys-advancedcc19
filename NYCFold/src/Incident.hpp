@@ -17,7 +17,7 @@ class Incident{
     
 public:
     string timestamp;
-    unsigned int timeval;
+    int timeval;
     int x_coord;
     int y_coord;
     
@@ -45,10 +45,12 @@ public:
         return this->timeval == _incdt.timeval;
     };
     
+    bool happened = false;
     
     void display();
     
-} incdtObject;
+};
 
+//incdtObject;
 
 #endif /* Incident_hpp */

@@ -116,12 +116,11 @@ void ofApp::setup(){
          according to the Incidents' "timeval" property (unsigned int)
          */
         
-        //std::sort(incidents.begin(), incidents.end()); - use overloaded operator< ?
+        std::sort(incidents.begin(), incidents.end()); //- use overloaded operator< ?
         //sort(incidents.begin(), incidents.end(), incdtObject);
         //std::sort(incidents.begin(), incidents.end(), &ofApp::comparIncdt);
         
     }
-    
     
 
 
@@ -137,18 +136,17 @@ void ofApp::update(){
 void ofApp::draw(){
     
     ofBackground(0);
-    ofSetColor(160);
     
+    ofSetColor(180);
     ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
     
-    for(int i=0; i<30; i++){
+    for(int i=0; i<incidents.size(); i++){
         auto incd = incidents[i];
         //ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+60);
         
         incd->display();
         //ofLog() << i << endl;
     }
-    
 
 }
 
