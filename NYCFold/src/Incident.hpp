@@ -29,6 +29,8 @@ public:
     int EAST = 1078000;
     int WEST = 909000;
     
+    int r = 1.5;
+    
     Incident();
     Incident(string time_s, string x, string y);
     Incident(string time_s, string timevals, int xp, int yp);

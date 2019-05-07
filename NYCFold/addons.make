@@ -1,3 +1,4 @@
+ofxGui
 ofxJSON
 ofxOpenCv
 ofxXmlSettings

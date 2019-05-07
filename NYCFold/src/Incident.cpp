@@ -44,8 +44,8 @@ Incident::Incident(string time_s, string timevals, int xp, int yp){
 
 //--------------------------------------------------------------
 void Incident::display(){
-    ofSetColor(200);
-    ofDrawCircle(x_pos, y_pos, 1.2);
+    ofSetColor(180);
+    ofDrawCircle(x_pos, y_pos, r);
 }
 
 

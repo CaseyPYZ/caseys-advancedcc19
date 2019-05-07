@@ -126,22 +126,27 @@ void ofApp::setup(){
         
     }
     
-    clkfont.load("plantagenet-cherokee.ttf", 12);
+    clkfont.load("font/plantagenet-cherokee.ttf", 12);
+    
+    canvas.allocate(ofGetWidth(), ofGetHeight(), GL_RGB);
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
     
-    clockPlus();
-    
+    // clock++ (if not paused)
+    if(!paused){
+        clockPlus();
+    }
     
     for(int i=0; i<incidents.size(); i++){
         if(incidents[i]->timeval<=clock){
             incidents[i]->happened = true;
+        } else {
+            incidents[i]->happened = false;
         }
     }
-    
     
     if(clock<1000000000){
         clkpre = "200";
@@ -151,6 +156,8 @@ void ofApp::update(){
     
     clkstr = clkpre + to_string(clock).substr(0,1+pos_offset) + "-" + to_string(clock).substr(1+pos_offset,2) + "-" + to_string(clock).substr(3+pos_offset,2);
     //clkstr_b = to_string(clock).substr(5+pos_offset,2) + ":00";
+    
+
 }
 
 
@@ -159,26 +166,25 @@ void ofApp::draw(){
     
     ofBackground(0);
     
+    canvas.begin();
+    
+    ofSetColor(0);
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    
     ofSetColor(200);
-    //ofDrawBitmapString("Incidents num: "+to_string(incidents.size())+"  clock: "+clkpre+to_string(clock), 20, 20);
-    
-    clkfont.drawString(clkstr, 30, 30);
-    //clkfont.drawString(clkstr_b, 180, 30);
-    
-    
     for(int i=0; i<incidents.size(); i++){
-        //auto incd = incidents[i];
-        //ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+60);
-
-        // test - display Incident by boolean flag
-
+        
         if(incidents[i]->happened){
             incidents[i]->display();
         }
     }
+    canvas.end();
     
+    canvas.draw(0, 0, ofGetWidth(), ofGetHeight());
     
-
+    if(showstr){
+        clkfont.drawString(clkstr, 30, 30);
+    }
 }
 
 //--------------------------------------------------------------
@@ -214,6 +220,7 @@ void ofApp::exit(){
         data_saved = true;
         
         ofLogNotice("on exit") << "Data saved" << endl;
+        
     }
     
 }
@@ -229,9 +236,18 @@ void ofApp::clockPlus(){
     // + 1h
     clock+=100;
     
+    // constrain clock value
+    if(clock<=CLOCK_INIT){
+        clock=CLOCK_INIT;
+    } else if (clock>=CLOCK_MAX){
+        clock=CLOCK_MAX;
+    }
+    
     // 9 -> 10 digits
     if( clock>=1000000000 ){
         pos_offset = 1;
+    } else {
+        pos_offset = 0;
     }
     
     // 24h -> 1d
@@ -240,7 +256,7 @@ void ofApp::clockPlus(){
         clock+=7600; // clock-=2400;clock+=10000;
     }
     
-    // 30d -> 1m  --------------------------------------------------------------*30/31
+    // 30d -> 1m
     
     if( to_string(clock).substr(3+pos_offset,2).compare(full_month)==0 ){
         clock+=700000; // clock-=300000;clock+=1000000;
@@ -268,21 +284,18 @@ void ofApp::clockPlus(){
 void ofApp::exportPDF(){
     
     grabbedImg.grabScreen(0,0,ofGetWidth(), ofGetHeight());
-    
-    //string path = "snapshot-"+clkstr+".png";
-    //pdf_img.save(path);
-    
-    // invert img color
-    pix = grabbedImg.getPixels();
+
+    tex = canvas.getTexture();
+    tex.readToPixels(pix);
     
     for(int i=0; i<pix.size(); i++){
-        pix[i] = 255 - pix[i];
+       pix[i] = 255 - pix[i];
     }
     
     colorImg.setFromPixels(pix);
     greyImg = colorImg;
     
-    ctrFinder.findContours(greyImg, 1, 300, 19000, true, true);
+    ctrFinder.findContours(greyImg, 1, 300, 19000, false, true);
     
     ofBeginSaveScreenAsPDF("vecSnapshot-"+clkstr+".pdf");
     ctrFinder.draw(0, 0, ofGetWidth(), ofGetHeight());
@@ -293,11 +306,21 @@ void ofApp::exportPDF(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
-    if( key=='s' ){
+    if( key == 's' ){
         ss.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
         ss.save("snapshot-"+clkstr+".png");
-    } else if ( key=='x'){
+    } else if ( key == 'x'){
         exportPDF();
+    } else if ( key == ' '){
+        paused = !paused;
+    } else if ( key == 't'){
+        showstr = !showstr;
+    } else if ( key == OF_KEY_UP){ // +1y
+        clock+=100000000;
+    } else if ( key == OF_KEY_DOWN){
+        clock-=100000000;
+    } else if ( key == OF_KEY_RETURN){
+        clock = CLOCK_INIT;
     }
 }
 

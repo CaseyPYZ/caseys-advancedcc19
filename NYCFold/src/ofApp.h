@@ -35,6 +35,8 @@ class ofApp : public ofBaseApp{
         void saveReverseImg();
         void exportPDF();
     
+        bool paused = false;
+    
         ofxJSONElement json;
         string del = ":";
     
@@ -54,6 +56,7 @@ class ofApp : public ofBaseApp{
         //int itr = 0;
     
         int CLOCK_INIT = 601010000;
+        int CLOCK_MAX = 1812310000;
         int pos_offset = 0;
         string full_month = "30";
         int clock = 601010000;
@@ -63,13 +66,17 @@ class ofApp : public ofBaseApp{
         string clkstr_b;
         ofTrueTypeFont clkfont;
     
+        bool showstr = true;
+    
         ofImage grabbedImg;
         ofPixels pix;
-        ofTexture newtex;
+        ofTexture tex;
     
         ofxCvColorImage colorImg;
         ofxCvGrayscaleImage greyImg;
     
         ofxCvContourFinder ctrFinder;
+    
+        ofFbo canvas;
         
 };
