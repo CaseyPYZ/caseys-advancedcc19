@@ -33,20 +33,21 @@ public:
     Incident(string time_s, string x, string y);
     Incident(string time_s, string timevals, int xp, int yp);
     
-    inline bool operator < (const Incident& _incdt){
-        return this->timeval < _incdt.timeval;
+    inline bool operator < (const Incident& _incdt) const{
+        return timeval < _incdt.timeval;
     };
     
-    inline bool operator > (const Incident& _incdt){
-        return this->timeval > _incdt.timeval;
+    inline bool operator > (const Incident& _incdt) const{
+        return timeval > _incdt.timeval;
     };
     
-    inline bool operator == (const Incident& _incdt){
-        return this->timeval == _incdt.timeval;
+    inline bool operator == (const Incident& _incdt) const{
+        return timeval == _incdt.timeval;
     };
     
     bool happened = false;
     
+    bool compar(Incident& _incdt);
     void display();
     
 };

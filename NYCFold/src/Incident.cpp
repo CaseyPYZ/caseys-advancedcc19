@@ -44,9 +44,14 @@ Incident::Incident(string time_s, string timevals, int xp, int yp){
 
 //--------------------------------------------------------------
 void Incident::display(){
-    ofSetColor(160);
-    ofDrawCircle(x_pos, y_pos, 0.5);
+    ofSetColor(200);
+    ofDrawCircle(x_pos, y_pos, 1);
 }
 
+
+//--------------------------------------------------------------
+bool Incident::compar(Incident& _incdt){
+    return timeval < _incdt.timeval;
+}
 
 

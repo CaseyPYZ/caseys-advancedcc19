@@ -28,6 +28,7 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
     
+        void clockPlus();
         bool comparIncdt(shared_ptr<Incident> lhs, shared_ptr<Incident> rhs);
     
         ofxJSONElement json;
@@ -46,6 +47,16 @@ class ofApp : public ofBaseApp{
     
         ofImage ss;
     
+        //int itr = 0;
     
+        int CLOCK_INIT = 601010000;
+        int pos_offset = 0;
+        string full_month = "30";
+        int clock = 601010000;
+    
+        string clkpre;
+        string clkstr;
+        string clkstr_b;
+        ofTrueTypeFont clkfont;
         
 };

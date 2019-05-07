@@ -45,8 +45,8 @@ void ofApp::setup(){
             ofLogError("Incidents data file did not load.");
         }
         
-        
     } else {
+        
         /*
          Read raw data from NYC Open Data json api
          */
@@ -71,6 +71,7 @@ void ofApp::setup(){
          Process json data
          Instantiate a Incident object off of each data unit
          */
+        
         for (Json::ArrayIndex i = 0; i < json.size(); ++i)
         {
             string date  = json[i]["occur_date"].asString();
@@ -116,19 +117,40 @@ void ofApp::setup(){
          according to the Incidents' "timeval" property (unsigned int)
          */
         
-        std::sort(incidents.begin(), incidents.end()); //- use overloaded operator< ?
+        //std::sort(incidents.begin(), incidents.end());
+        
         //sort(incidents.begin(), incidents.end(), incdtObject);
         //std::sort(incidents.begin(), incidents.end(), &ofApp::comparIncdt);
         
+        //ofSort(incidents);
+        
     }
     
-
+    clkfont.load("plantagenet-cherokee.ttf", 12);
 
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-
+    
+    clockPlus();
+    
+    /*
+    for(int i=0; i<incidents.size(); i++){
+        if(incidents[i]->timeval<=clock){
+            incidents[i]->happened = true;
+        }
+    }
+     */
+    
+    if(clock<1000000000){
+        clkpre = "200";
+    } else {
+        clkpre = "20";
+    }
+    
+    clkstr = clkpre + to_string(clock).substr(0,1+pos_offset) + "-" + to_string(clock).substr(1+pos_offset,2) + "-" + to_string(clock).substr(3+pos_offset,2);
+    //clkstr_b = to_string(clock).substr(5+pos_offset,2) + ":00";
 }
 
 
@@ -137,16 +159,25 @@ void ofApp::draw(){
     
     ofBackground(0);
     
-    ofSetColor(180);
-    ofDrawBitmapString("Incidents num: " + to_string(incidents.size()), 20, 20);
+    ofSetColor(200);
+    //ofDrawBitmapString("Incidents num: "+to_string(incidents.size())+"  clock: "+clkpre+to_string(clock), 20, 20);
     
+    clkfont.drawString(clkstr, 30, 30);
+    //clkfont.drawString(clkstr_b, 180, 30);
+    
+    /*
     for(int i=0; i<incidents.size(); i++){
-        auto incd = incidents[i];
+        //auto incd = incidents[i];
         //ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+60);
-        
-        incd->display();
-        //ofLog() << i << endl;
+
+        // test - display Incident by boolean flag
+
+        if(incidents[i]->happened){
+            incidents[i]->display();
+        }
     }
+    */
+    
 
 }
 
@@ -193,13 +224,53 @@ bool ofApp::comparIncdt(shared_ptr<Incident> lhs, shared_ptr<Incident> rhs){
 }
 
 //--------------------------------------------------------------
+void ofApp::clockPlus(){
+    
+    // + 1h
+    clock+=100;
+    
+    // 9 -> 10 digits
+    if( clock>=1000000000 ){
+        pos_offset = 1;
+    }
+    
+    // 24h -> 1d
+    
+    if( to_string(clock).substr(5+pos_offset,2).compare("24")==0 ){
+        clock+=7600; // clock-=2400;clock+=10000;
+    }
+    
+    // 30d -> 1m  --------------------------------------------------------------*30/31
+    
+    if( to_string(clock).substr(3+pos_offset,2).compare(full_month)==0 ){
+        clock+=700000; // clock-=300000;clock+=1000000;
+    }
+    
+    // 12m -> 1y
+    
+    if( to_string(clock).substr(1+pos_offset,2).compare("13")==0 ){
+        clock+=87000000; // clock-=13000000;clock+=100000000;
+    }
+    
+    // full month - 30/31
+    
+    int month = stoi(to_string(clock).substr(1+pos_offset,2));
+    if( month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12){
+        full_month = "31";
+    } else {
+        full_month = "30";
+    }
+    
+    
+}
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
     if( key=='s' ){
         ss.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
         ss.save("screenshot.png");
     }
-
 }
 
 //--------------------------------------------------------------
