@@ -1,2 +1,3 @@
 ofxJSON
+ofxOpenCv
 ofxXmlSettings

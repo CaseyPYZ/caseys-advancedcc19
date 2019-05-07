@@ -6,6 +6,7 @@
 #include <fstream>
 #include "ofxJSON.h"
 #include "ofxXmlSettings.h"
+#include "ofxOpenCv.h"
 #include "Incident.hpp"
 
 class ofApp : public ofBaseApp{
@@ -30,6 +31,9 @@ class ofApp : public ofBaseApp{
     
         void clockPlus();
         bool comparIncdt(shared_ptr<Incident> lhs, shared_ptr<Incident> rhs);
+    
+        void saveReverseImg();
+        void exportPDF();
     
         ofxJSONElement json;
         string del = ":";
@@ -58,5 +62,14 @@ class ofApp : public ofBaseApp{
         string clkstr;
         string clkstr_b;
         ofTrueTypeFont clkfont;
+    
+        ofImage grabbedImg;
+        ofPixels pix;
+        ofTexture newtex;
+    
+        ofxCvColorImage colorImg;
+        ofxCvGrayscaleImage greyImg;
+    
+        ofxCvContourFinder ctrFinder;
         
 };

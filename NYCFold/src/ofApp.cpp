@@ -135,13 +135,13 @@ void ofApp::update(){
     
     clockPlus();
     
-    /*
+    
     for(int i=0; i<incidents.size(); i++){
         if(incidents[i]->timeval<=clock){
             incidents[i]->happened = true;
         }
     }
-     */
+    
     
     if(clock<1000000000){
         clkpre = "200";
@@ -165,7 +165,7 @@ void ofApp::draw(){
     clkfont.drawString(clkstr, 30, 30);
     //clkfont.drawString(clkstr_b, 180, 30);
     
-    /*
+    
     for(int i=0; i<incidents.size(); i++){
         //auto incd = incidents[i];
         //ofDrawBitmapString(to_string(i)+" - "+incd->timestamp+" - "+to_string(incd->timeval)+" ["+to_string(incd->x_coord)+","+to_string(incd->y_coord)+"] - ["+to_string(incd->x_pos)+","+to_string(incd->y_pos)+"]" , 20, i*20+60);
@@ -176,7 +176,7 @@ void ofApp::draw(){
             incidents[i]->display();
         }
     }
-    */
+    
     
 
 }
@@ -265,11 +265,39 @@ void ofApp::clockPlus(){
 }
 
 //--------------------------------------------------------------
+void ofApp::exportPDF(){
+    
+    grabbedImg.grabScreen(0,0,ofGetWidth(), ofGetHeight());
+    
+    //string path = "snapshot-"+clkstr+".png";
+    //pdf_img.save(path);
+    
+    // invert img color
+    pix = grabbedImg.getPixels();
+    
+    for(int i=0; i<pix.size(); i++){
+        pix[i] = 255 - pix[i];
+    }
+    
+    colorImg.setFromPixels(pix);
+    greyImg = colorImg;
+    
+    ctrFinder.findContours(greyImg, 1, 300, 19000, true, true);
+    
+    ofBeginSaveScreenAsPDF("vecSnapshot-"+clkstr+".pdf");
+    ctrFinder.draw(0, 0, ofGetWidth(), ofGetHeight());
+    ofEndSaveScreenAsPDF();
+    
+}
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     
     if( key=='s' ){
         ss.grabScreen(0, 0, ofGetWidth(), ofGetHeight());
-        ss.save("screenshot.png");
+        ss.save("snapshot-"+clkstr+".png");
+    } else if ( key=='x'){
+        exportPDF();
     }
 }
 
