@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>NYCFoldDebug</string>
 	<key>CFBundleIconFile</key>
-	<string>icon-debug.icns</string>
+	<string>nyc-icon.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>cc.openFrameworks.ofapp</string>
 	<key>CFBundleInfoDictionaryVersion</key>
